@@ -6,6 +6,8 @@ ControllerPtr myControllers[BP32_MAX_CONTROLLERS];
 // Pin definitions for the LEDs
 const int brakeLedPin = 2;
 const int throttleLedPin = 15;
+const int brakeLedPin2 = 4;
+const int throttleLedPin2 = 16;
 
 // Arduino setup function. Runs in CPU 1
 void setup() {
@@ -101,15 +103,7 @@ void processGamepad(ControllerPtr gamepad) {
     colorIdx++;
   }
 
-  if (gamepad->b()) {
-    static int led = 0;
-    led++;
-    gamepad->setPlayerLEDs(led & 0x0f);
-  }
-
-  if (gamepad->x()) {
-    gamepad->setRumble(0xc0 /* force */, 0xc0 /* duration */);
-  }
+  
 
   // Get the brake and throttle values
   int brakeValue = gamepad->brake();      // (0 - 1023)
@@ -118,11 +112,24 @@ void processGamepad(ControllerPtr gamepad) {
   // Map these values to the LED brightness range (0 - 255)
   int brakeBrightness = map(brakeValue, 0, 1023, 0, 255);
   int throttleBrightness = map(throttleValue, 0, 1023, 0, 255);
+  
+  int Xval = gamepad->axisX();
+  int Yval = gamepad->axisY();
 
   // Set the LED brightness
   analogWrite(brakeLedPin, brakeBrightness);
   analogWrite(throttleLedPin, throttleBrightness);
+  analogWrite(brakeLedPin2, brakeBrightness);
+  analogWrite(throttleLedPin2, throttleBrightness);
 
+  if (Yval > 100){
+    analogWrite(brakeLedPin, 1023);
+    analogWrite(throttleLedPin2, 1023)
+  }
+  if (Yval < -100){
+    analogWrite(brakeLedPin2, 1023);
+    analogWrite(throttleLedPin, 1023)
+  }
   char buf[256];
   snprintf(buf, sizeof(buf) - 1,
            "idx=%d, dpad: 0x%02x, buttons: 0x%04x, "
