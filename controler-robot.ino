@@ -8,11 +8,14 @@ const int brakeLedPin = 2;
 const int throttleLedPin = 15;
 const int brakeLedPin2 = 4;
 const int throttleLedPin2 = 16;
-
+const int TRIG_PIN = 17;
+const int ECHO_PIN = 5;
 // Arduino setup function. Runs in CPU 1
 void setup() {
   // Initialize serial
   Serial.begin(115200);
+  pinMode(TRIG_PIN, OUTPUT); // Set TRIG pin as output
+  pinMode(ECHO_PIN, INPUT); 
   while (!Serial) {
     ;
   }
@@ -187,6 +190,29 @@ void processBalanceBoard(ControllerPtr balance) {
   Serial.println(buf);
 }
 
+void getdist(){
+  long duration, distance;
+  
+  // Send a 10us pulse to trigger the sensor
+  digitalWrite(TRIG_PIN, LOW);
+  delayMicroseconds(2);
+  digitalWrite(TRIG_PIN, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(TRIG_PIN, LOW);
+  
+  // Measure the duration of the pulse from the echo pin
+  duration = pulseIn(ECHO_PIN, HIGH);
+  
+  // Calculate distance in centimeters
+  distance = duration * 0.034 / 2;
+  
+  // Print the distance to the Serial Monitor
+  Serial.print("Distance: ");
+  Serial.print(distance);
+  Serial.println(" cm");
+  
+  delay(500);
+}
 // Arduino loop function. Runs in CPU 1
 void loop() {
   BP32.update();
