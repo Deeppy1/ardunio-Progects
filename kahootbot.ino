@@ -4,6 +4,7 @@ const int triggerPin = 2;   // Pin that triggers the sequence
 
 void setup() {
   pinMode(triggerPin, INPUT);  // Set pin 2 as an input
+  Serial.begin(9600);          // Start serial communication
   Keyboard.begin();            // Start keyboard control
 }
 
@@ -54,7 +55,9 @@ void loop() {
     }
 
     // Type a random string of letters
-    Keyboard.print(randomString(10));  // Print 10 random characters
+    String randomStr = randomString(10);  // Generate 10 random characters
+    Serial.println(randomStr);            // Print random string to Serial Monitor
+    Keyboard.print(randomStr);            // Also type the string via the keyboard
 
     // Press Enter
     Keyboard.press(KEY_RETURN);
