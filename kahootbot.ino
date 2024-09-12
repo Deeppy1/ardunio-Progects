@@ -29,14 +29,15 @@ void loop() {
       delay(100);
       Keyboard.release(KEY_TAB);
       delay(200);
-    }
-
-    // Press Ctrl + V (paste from clipboard)
-    Keyboard.press(KEY_LEFT_CTRL);
+      Keyboard.press(KEY_LEFT_CTRL);
     Keyboard.press('v');
     delay(100);
     Keyboard.releaseAll();
     delay(500);
+    }
+
+    // Press Ctrl + V (paste from clipboard)
+ 
 
     // Press Enter
     Keyboard.press(KEY_RETURN);
